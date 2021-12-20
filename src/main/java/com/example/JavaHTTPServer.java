@@ -19,6 +19,8 @@ import java.util.StringTokenizer;
 public class JavaHTTPServer implements Runnable{ 
 	
 	static final File WEB_ROOT = new File("./src/main/resources/");
+	static final File CSS_WEB_ROOT = new File("./src/main/resources/css/");
+	static final File CSS_FILE = new File("myStyle.css");
 	static final String DEFAULT_FILE = "index.html";
 	static final String FILE_NOT_FOUND = "404.html";
 	static final String METHOD_NOT_SUPPORTED = "not_supported.html";
@@ -92,7 +94,6 @@ public class JavaHTTPServer implements Runnable{
 				
 			} else {
 				// GET or HEAD method
-
 				if(fileRequested.endsWith("/")){
 					fileRequested += DEFAULT_FILE;
 					File file = new File(WEB_ROOT, fileRequested);
@@ -117,6 +118,7 @@ public class JavaHTTPServer implements Runnable{
 						sendFile(out, dataOut, fileErr, fileLength, content, statusCode);
 					}
 				} else {
+					
 					File file = new File(WEB_ROOT, fileRequested);
 					if(file.isFile()){
 						statusCode=200;
@@ -135,21 +137,11 @@ public class JavaHTTPServer implements Runnable{
 						fileRequested+="/";
 						out.println("HTTP/1.1 " + statusCode + " Location Changed");
 						out.println("Location " + fileRequested);
-						out.flush();
+						out.println();
 					}
+					
 				}
-
-				File file = new File(WEB_ROOT, fileRequested);
-				statusCode=200;
-				int fileLength = (int) file.length();
-				String content = getContentType(fileRequested);
-				if (method.equals("GET")) { // GET method so we return content
-					sendFile(out, dataOut, file, fileLength, content, statusCode);
-				}
-				if (verbose) {
-					System.out.println("File " + fileRequested + " of type " + content + " returned");
-				}
-			
+				
 			}
 			
 		} catch (FileNotFoundException fnfe) {
@@ -195,10 +187,30 @@ public class JavaHTTPServer implements Runnable{
 	
 	// return supported MIME Types
 	private String getContentType(String fileRequested) {
-		if (fileRequested.endsWith(".htm")  ||  fileRequested.endsWith(".html"))
+		if (fileRequested.endsWith(".htm")  ||  fileRequested.endsWith(".html")){
 			return "text/html";
-		else
+		}
+		else if(fileRequested.endsWith(".css")){
+			return "text/css";
+		}
+		else if(fileRequested.endsWith(".js")){
+			return "application/js";
+		}
+		else if(fileRequested.endsWith(".png")){
+			return "image/png";
+		}
+		else if(fileRequested.endsWith(".jpg")){
+			return "image/jpg";
+		}
+		else if(fileRequested.endsWith(".jpeg")){
+			return "image/jpeg";
+		}
+		else if(fileRequested.endsWith(".gif")){
+			return "image/gif";
+		}
+		else{
 			return "text/plain";
+		}
 	}
 	
 	private void fileNotFound(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException {
