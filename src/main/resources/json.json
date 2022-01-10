@@ -1,0 +1,16 @@
+{
+    "nome":"5A",
+    "aula":"13tc",
+    "indirizzo":"IA",
+    "annoDiInizio":2019,
+    "Studenti":[
+        {
+            "nome":"Adrian",
+            "cognome":"Cimara"
+        },
+        {
+            "nome":"Sasha",
+            "cognome":"Cerbai"
+        }
+    ]
+}

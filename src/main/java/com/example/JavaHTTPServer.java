@@ -20,7 +20,8 @@ public class JavaHTTPServer implements Runnable{
 	
 	static final File WEB_ROOT = new File("./src/main/resources/");
 	static final File CSS_WEB_ROOT = new File("./src/main/resources/css/");
-	static final File CSS_FILE = new File("myStyle.css");
+	static final File IMG_WEB_ROOT = new File("./src/main/resources/img/");
+	static final String CSS_FILE = "style.css";
 	static final String DEFAULT_FILE = "index.html";
 	static final String FILE_NOT_FOUND = "404.html";
 	static final String METHOD_NOT_SUPPORTED = "not_supported.html";
@@ -69,7 +70,6 @@ public class JavaHTTPServer implements Runnable{
 			out = new PrintWriter(connect.getOutputStream());
 			// get binary output stream to client (for requested data)
 			dataOut = new BufferedOutputStream(connect.getOutputStream());
-			
 			// get first line of the request from the client
 			String input = in.readLine();
 			// we parse the request with a string tokenizer
@@ -118,8 +118,22 @@ public class JavaHTTPServer implements Runnable{
 						sendFile(out, dataOut, fileErr, fileLength, content, statusCode);
 					}
 				} else {
-					
-					File file = new File(WEB_ROOT, fileRequested);
+					File Root;
+					String fileNeeded;
+					if(fileRequested.endsWith(".css")){
+						Root = CSS_WEB_ROOT;
+						fileNeeded = CSS_FILE;
+					}else if(fileRequested.endsWith(".png") || fileRequested.endsWith(".jpg") || fileRequested.endsWith(".jpeg") || fileRequested.endsWith(".gif")){
+						Root = IMG_WEB_ROOT;
+						String[] fileReq = fileRequested.split("/");
+						fileNeeded = "/" + fileReq[2];
+					}else{
+						Root = WEB_ROOT;
+						fileNeeded = fileRequested;
+					}
+					System.out.println(fileNeeded);
+					System.out.println(Root);
+					File file = new File(Root, fileNeeded);
 					if(file.isFile()){
 						statusCode=200;
 						int fileLength = (int) file.length();
@@ -207,6 +221,12 @@ public class JavaHTTPServer implements Runnable{
 		}
 		else if(fileRequested.endsWith(".gif")){
 			return "image/gif";
+		}
+		else if(fileRequested.endsWith(".json")){
+			return "text/json";
+		}
+		else if(fileRequested.endsWith(".xml")){
+			return "text/xml";
 		}
 		else{
 			return "text/plain";
